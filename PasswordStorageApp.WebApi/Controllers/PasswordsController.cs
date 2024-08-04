@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PasswordStorageApp.WebApi.Controllers
@@ -8,36 +7,40 @@ namespace PasswordStorageApp.WebApi.Controllers
     [ApiController]
     public class PasswordsController : ControllerBase
     {
-        [HttpGet] // Veriyi almak istediğimizi belirtiyoruz.
+        [HttpGet]
         public IActionResult GetAll()
         {
             var passwords = _passwords;
+
             return Ok(passwords);
         }
 
         [HttpGet("{passwordId}")]
         public IActionResult GetById(string passwordId)
         {
-            var password = _passwords.FirstOrDefault(x => x == passwordId);
+            var password = _passwords
+                .FirstOrDefault(p => p == passwordId);
+
             if (string.IsNullOrEmpty(password))
-            {
                 return NotFound();
-            }
+
             return Ok(password);
         }
 
         [HttpDelete("{passwordId}")]
         public IActionResult Remove(string passwordId)
         {
-            var password = _passwords.FirstOrDefault(x => x == passwordId);
+            var password = _passwords
+                .FirstOrDefault(p => p == passwordId);
+
             if (string.IsNullOrEmpty(password))
-            {
                 return NotFound();
-            }
+
             _passwords.Remove(password);
+            // dbContext.Passwords.Remove(password);
+
             return NoContent();
         }
-
 
         private static readonly List<string> _passwords = new()
         {
@@ -85,33 +88,4 @@ namespace PasswordStorageApp.WebApi.Controllers
             "qazwsx"
         };
     }
-
 }
-
-/*
-Controller bir hastane resepsiyonu gibi düşünülebilir. Yani gelen istekleri karşılar ve ilgili işlemleri yapar.
-GET isteği ile veri alınır.
-POST isteği ile veri eklenir.
-PUT isteği ile veri güncellenir.
-DELETE isteği ile veri silinir.
-PATCH isteği ile veri kısmen güncellenir. (Örneğin bir kullanıcının sadece ismi güncellenir.)
-
-IActionResult: Bir işlem sonucunda geriye döndürülecek veriyi belirtir. Örneğin bir metot bir string döndürüyorsa IActionResult yerine string yazılabilir.
-
-HTTPS Kodları: 
-200 OK: İstek başarılı bir şekilde gerçekleşti.
-201 Created: İstek başarılı bir şekilde gerçekleşti ve yeni bir kaynak oluşturuldu.
-204 No Content: İstek başarılı bir şekilde gerçekleşti ancak geriye herhangi bir içerik döndürülmedi.
-400 Bad Request: İstek hatalı.
-401 Unauthorized: Kullanıcı kimlik doğrulaması gerekiyor.
-403 Forbidden: Kullanıcı yetkili değil.
-404 Not Found: İstek yapılan kaynak bulunamadı.
-405 Method Not Allowed: İstek yapılan metot desteklenmiyor.
-409 Conflict: İstek yapılan işlem ile ilgili bir çakışma var.
-500 Internal Server Error: Sunucu hatası.
-
-
-_ : private bir alanı belirtir. Bu alan sadece bu sınıf içerisinde kullanılabilir.
-
-FirstOrDefault: Bir koleksiyon içerisinde belirtilen koşula uyan ilk elemanı getirir. Eğer koşula uyan bir eleman yoksa null döner.
- */
