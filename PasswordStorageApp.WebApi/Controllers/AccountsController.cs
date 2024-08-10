@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PasswordStorageApp.Domain.Dtos;
-using PasswordStorageApp.Domain.Models;
 using PasswordStorageApp.WebApi.Persistence.Contexts;
 
 namespace PasswordStorageApp.WebApi.Controllers
@@ -23,8 +22,8 @@ namespace PasswordStorageApp.WebApi.Controllers
             var accounts = await _dbContext
                 .Accounts
                 .AsNoTracking()
-                .Select(ac=>AccountGetAllDto.MapFromAccount(ac))
-                .ToListAsync(cancellationToken);                 
+                .Select(ac => AccountGetAllDto.MapFromAccount(ac))
+                .ToListAsync(cancellationToken);
 
             return Ok(accounts);
         }
@@ -40,7 +39,7 @@ namespace PasswordStorageApp.WebApi.Controllers
             if (account is null)
                 return NotFound();
 
-            return Ok(account);
+            return Ok(AccountGetByIdDto.MapFromAccount(account));
         }
 
         [HttpPost]
